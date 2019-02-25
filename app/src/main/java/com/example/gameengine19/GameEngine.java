@@ -3,7 +3,6 @@ package com.example.gameengine19;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,14 +12,12 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GameEngine extends AppCompatActivity implements Runnable {
+public abstract class GameEngine extends AppCompatActivity implements Runnable, TouchHandlerInterface {
 
   private Thread mainLoopThread;
   private State state = State.Paused;
