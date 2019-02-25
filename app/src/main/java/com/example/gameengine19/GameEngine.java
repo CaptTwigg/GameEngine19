@@ -96,7 +96,6 @@ public abstract class GameEngine extends AppCompatActivity implements Runnable {
     canvas.drawColor(color);
   }
 
-
   public boolean isTouchDown(int pointer) {
 
     return false;
@@ -123,10 +122,11 @@ public abstract class GameEngine extends AppCompatActivity implements Runnable {
     setContentView(surfaceView);
     surfaceHolder = surfaceView.getHolder();
     screen = createStartScreen();
+
     if (surfaceView.getWidth() > surfaceView.getHeight()) {
       setOffScreenSurface(480, 320);
-    }else{
-      setOffScreenSurface(800,480);
+    } else {
+      setOffScreenSurface(320, 480);
     }
 
   }
@@ -138,6 +138,14 @@ public abstract class GameEngine extends AppCompatActivity implements Runnable {
 
     offScreenSurface = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     canvas = new Canvas(offScreenSurface);
+  }
+
+  public int getFrameBufferWidth() {
+    return offScreenSurface.getWidth();
+  }
+
+  public int getFrameBufferHeight() {
+    return offScreenSurface.getHeight();
   }
 
   public void run() {
@@ -165,12 +173,18 @@ public abstract class GameEngine extends AppCompatActivity implements Runnable {
           if (!surfaceHolder.getSurface().isValid()) {
             continue;
           }
-          canvas = surfaceHolder.lockCanvas();
-          // all drawing happens here
-
-          //canvas.drawColor(Color.rgb(0, 0, 255));
+          Canvas canvas = surfaceHolder.lockCanvas();
           if (screen != null)
             screen.update(0);
+          src.left = 0;
+          src.top = 0;
+          src.right = offScreenSurface.getWidth() - 1;
+          src.bottom = offScreenSurface.getHeight() - 1;
+          dst.left = 0;
+          dst.top = 0;
+          dst.right = surfaceView.getWidth();
+          dst.bottom = surfaceView.getHeight();
+          canvas.drawBitmap(offScreenSurface, src, dst, null);
           surfaceHolder.unlockCanvasAndPost(canvas);
 
         }
