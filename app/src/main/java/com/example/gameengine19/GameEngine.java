@@ -75,8 +75,8 @@ public abstract class GameEngine extends AppCompatActivity implements Runnable, 
 
     src.left = srcX;
     src.top = srcY;
-    src.right = srcWidtch;
-    src.bottom = srcHeight;
+    src.right = srcX + srcWidtch;
+    src.bottom = srcY + srcHeight;
 
     dst.left = x;
     dst.top = y;

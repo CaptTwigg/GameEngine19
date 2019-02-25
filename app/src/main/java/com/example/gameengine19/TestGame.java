@@ -7,4 +7,8 @@ public class TestGame extends GameEngine {
     return new TestScreen(this);
   }
 
+  @Override
+  public boolean isTouchedDown(int fingers) {
+    return false;
+  }
 }
