@@ -1,14 +1,13 @@
-package com.example.gameengine19;
+package dk.kea.androidgame.martin.myfirstgameengine;
 
-public class TestGame extends GameEngine {
+import dk.kea.androidgame.martin.myfirstgameengine.core.GameEngine;
+import dk.kea.androidgame.martin.myfirstgameengine.core.Screen;
 
-  @Override
-  public Screen createStartScreen() {
-    return new TestScreen(this);
-  }
-
-  @Override
-  public boolean isTouchedDown(int fingers) {
-    return false;
-  }
+public class TestGame extends GameEngine
+{
+    @Override
+    public Screen createStartScreen()
+    {
+        return new TestScreen(this);
+    }
 }

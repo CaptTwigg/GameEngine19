@@ -1,48 +1,51 @@
-package com.example.gameengine19;
+package dk.kea.androidgame.martin.myfirstgameengine;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-public class TestScreen extends Screen {
+import dk.kea.androidgame.martin.myfirstgameengine.core.GameEngine;
+import dk.kea.androidgame.martin.myfirstgameengine.core.Screen;
 
-  int x, y = 100;
-  Bitmap bitmap;
+public class TestScreen extends Screen
+{
+    private int x = 0;
+    private int y = 0;
+    private Bitmap bitmap;
 
-
-  public TestScreen(GameEngine gameEngine) {
-    super(gameEngine);
-    this.bitmap = gameEngine.loadBitmap("bob.png");
-  }
-
-  int cut = 0;
-  @Override
-  public void update(float deltaTime) {
-    if (gameEngine.isTouchDown(0)) {
-      x = gameEngine.getTouchX(0);
-      y = gameEngine.getTouchY(0);
+    protected TestScreen(GameEngine gameEngine)
+    {
+        super(gameEngine);
+        bitmap = gameEngine.loadBitmap("bob.png");
     }
-    gameEngine.clearFrameBuffer(Color.BLUE);
-    gameEngine.drawBitmap(bitmap, x, y);
-    gameEngine.drawBitmap(bitmap, x + 100, y + 100, cut, cut, 128, 128);
-    cut++;
 
-    if(cut == 128)
-      cut =0;
+    @Override
+    public void update(float deltaTime)
+    {
+        gameEngine.clearFrameBuffer(Color.GREEN);
+        if (gameEngine.isTouchDown(0))
+        {
+            x = gameEngine.getTouchX(0);
+            y = gameEngine.getTouchY(0);
+        }
 
-  }
+        float x_acc = gameEngine.getAccelerometer()[0];
+        float y_acc = -1 * gameEngine.getAccelerometer()[1];
+        x_acc = (float) (gameEngine.getFrameBufferWidth() / 2) - (((x_acc / 10) * gameEngine.getFrameBufferWidth()) / 2);
+        y_acc = (float) (gameEngine.getFrameBufferHeight() / 2) - (((y_acc / 10) * gameEngine.getFrameBufferHeight()) / 2);
 
-  @Override
-  public void pause() {
+        gameEngine.clearFrameBuffer(Color.GREEN);
+        gameEngine.drawBitmap(bitmap, x - 64, y - 64);
+        gameEngine.drawBitmap(bitmap, (int) x_acc - 64, (int) y_acc - 64);
+        //gameEngine.drawBitmap(bitmap, 200, 300, 64, 64, 64, 64);
+    }
 
-  }
+    @Override
+    public void pause()
+    {
+    }
 
-  @Override
-  public void resume() {
-
-  }
-
-  @Override
-  public void dispose() {
-
-  }
+    @Override
+    public void resume()
+    {
+    }
 }
