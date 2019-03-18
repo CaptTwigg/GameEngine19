@@ -2,8 +2,8 @@ package com.example.gameengine19.Breakout;
 
 public
 class Block {
-  public static float WIDTH  = 30;
-  public static float HEIGHT = 18;
+  public static float WIDTH  = 40;
+  public static float HEIGHT = 144/8;
   public        float x;
   public        float y;
   public        int   type;

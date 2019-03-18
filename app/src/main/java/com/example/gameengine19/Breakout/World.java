@@ -15,6 +15,11 @@ class World {
   List<Block> blocks = new ArrayList<>();
 
   public
+  World() {
+    generateBlock();
+  }
+
+  public
   void update(float deltaTime, float accelX, boolean touchDown, int touchX) {
 
 
@@ -77,8 +82,25 @@ class World {
 
     }
   }
-  private void generateblocks(){
+
+//  private
+//  void generateblocks() {
+//    blocks.clear();
+//    for (int y = 60, type = 0; y < 60 + 8 * (Block.HEIGHT + 4); y = y + (int) Block.HEIGHT, type++) {
+//
+//      for (int x = 20; x < 320 - Block.WIDTH; x += (int) Block.WIDTH + 4) {
+//        blocks.add(new Block(x, y, type));
+//
+//      }
+//    }
+//  }
+  private void generateBlock(){
     blocks.clear();
+    for(int y = 60, type = 0; y <60 + 8*(Block.HEIGHT+4); y=y+(int)Block.HEIGHT, type++){
+      for (int x=20; x<320 - Block.WIDTH; x=x + (int)Block.WIDTH+4){
+        blocks.add(new Block(x,y,type));
+      }
+    }
   }
 
 }

@@ -146,8 +146,8 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
     if (canvas != null) {
       source.left = sourceX;
       source.top = sourceY;
-      source.right = sourceWidth + sourceWidth;
-      source.bottom = sourceHeight + sourceHeight;
+      source.right = sourceX + sourceWidth;
+      source.bottom = sourceY + sourceHeight;
 
       destination.left = x;
       destination.top = y;

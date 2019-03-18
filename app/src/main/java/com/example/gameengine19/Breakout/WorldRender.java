@@ -10,6 +10,8 @@ class WorldRender {
   World      world;
   Bitmap     ballImage;
   Bitmap     paddle;
+  Bitmap     blockImage;
+  Block      block;
 
   public
   WorldRender(GameEngine gameEngine, World world) {
@@ -17,12 +19,31 @@ class WorldRender {
     this.world = world;
     ballImage = gameEngine.loadBitmap("breakout/ball.png");
     paddle = gameEngine.loadBitmap("breakout/paddle.png");
+    blockImage = gameEngine.loadBitmap("breakout/blocks.png");
 
   }
 
-  public
-  void render() {
-    gameEngine.drawBitmap(ballImage, (int) world.ball.x, (int) world.ball.y);
-    gameEngine.drawBitmap(paddle, (int) world.paddle.x, (int) world.paddle.y);
+//  public
+//  void render() {
+//    gameEngine.drawBitmap(ballImage, (int) world.ball.x, (int) world.ball.y);
+//    gameEngine.drawBitmap(paddle, (int) world.paddle.x, (int) world.paddle.y);
+//
+//    for (int i = 0; i < world.blocks.size(); i++) {
+//      block = world.blocks.get(i);
+//      gameEngine.drawBitmap(blockImage, (int) block.x, (int) block.y,
+//                            0, (int) (block.type * Block.HEIGHT),
+//                            (int) Block.WIDTH, (int) Block.HEIGHT
+//                           );
+//    }
+//  }
+  public void render() {
+    gameEngine.drawBitmap(ballImage, (int)world.ball.x, (int)world.ball.y);
+    gameEngine.drawBitmap(paddle, (int)world.paddle.x, (int)world.paddle.y);
+    for(int i = 0; i<world.blocks.size(); i++){
+      block = world.blocks.get(i);
+      gameEngine.drawBitmap(blockImage, (int)block.x, (int)block.y,
+                            0, (int)(block.type*Block.HEIGHT),
+                            (int)Block.WIDTH, (int)Block.HEIGHT);
+    }
   }
 }
