@@ -1,4 +1,4 @@
-package dk.kea.androidgame.martin.myfirstgameengine.core;
+package com.example.gameengine19.core;
 
 public enum State
 {

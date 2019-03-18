@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".TestGame"
+            android:name=".Breakout.Breakout"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:screenOrientation="portrait">
             <intent-filter>

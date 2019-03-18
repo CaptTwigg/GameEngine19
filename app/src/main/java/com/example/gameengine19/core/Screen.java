@@ -1,4 +1,4 @@
-package dk.kea.androidgame.martin.myfirstgameengine.core;
+package com.example.gameengine19.core;
 
 public abstract class Screen
 {
@@ -14,4 +14,6 @@ public abstract class Screen
     public abstract void pause();
 
     public abstract void resume();
+
+    public abstract void dispose();
 }

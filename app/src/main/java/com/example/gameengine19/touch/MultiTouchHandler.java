@@ -1,4 +1,4 @@
-package dk.kea.androidgame.martin.myfirstgameengine.touch;
+package com.example.gameengine19.touch;
 
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,9 +29,16 @@ public class MultiTouchHandler implements TouchHandler, View.OnTouchListener
         int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
         int pointerId = event.getPointerId(pointerIndex);
 
+
+
         switch (action)
         {
             case MotionEvent.ACTION_DOWN:
+                System.out.println("touch down");
+
+
+
+            case MotionEvent.ACTION_POINTER_DOWN:
                 touchEvent = touchEventPool.obtains();
                 touchEvent.type = TouchEvent.TouchEventType.DOWN;
                 touchEvent.pointer = pointerId;
@@ -45,12 +52,10 @@ public class MultiTouchHandler implements TouchHandler, View.OnTouchListener
                     touchEventBuffer.add(touchEvent);
                 }
                 break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                break;
             case MotionEvent.ACTION_UP:
-                break;
+
             case MotionEvent.ACTION_POINTER_UP:
-                break;
+
             case MotionEvent.ACTION_CANCEL:
                 touchEvent = touchEventPool.obtains();
                 touchEvent.type = TouchEvent.TouchEventType.UP;

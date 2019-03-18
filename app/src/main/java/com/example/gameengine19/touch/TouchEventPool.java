@@ -1,6 +1,8 @@
-package dk.kea.androidgame.martin.myfirstgameengine.touch;
+package com.example.gameengine19.touch;
 
-import dk.kea.androidgame.martin.myfirstgameengine.core.Pool;
+import com.example.gameengine19.core.Pool;
+
+
 
 public class TouchEventPool extends Pool<TouchEvent>
 {

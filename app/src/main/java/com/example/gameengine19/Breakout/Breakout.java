@@ -1,4 +1,4 @@
-package com.example.gameengine19;
+package com.example.gameengine19.Breakout;
 
 import com.example.gameengine19.core.GameEngine;
 import com.example.gameengine19.core.Screen;
@@ -9,6 +9,6 @@ class Breakout extends GameEngine {
   @Override
   public
   Screen createStartScreen() {
-    return null;
+    return new MainmenuScreen(this);
   }
 }

@@ -16,13 +16,13 @@ class WorldRender {
     this.gameEngine = gameEngine;
     this.world = world;
     ballImage = gameEngine.loadBitmap("breakout/ball.png");
-    paddle = gameEngine.loadBitmap("breakout/paddle");
+    paddle = gameEngine.loadBitmap("breakout/paddle.png");
 
   }
 
   public
   void render() {
     gameEngine.drawBitmap(ballImage, (int) world.ball.x, (int) world.ball.y);
-    gameEngine.drawBitmap(paddle, (int) world.ball.x, (int) world.ball.y);
+    gameEngine.drawBitmap(paddle, (int) world.paddle.x, (int) world.paddle.y);
   }
 }

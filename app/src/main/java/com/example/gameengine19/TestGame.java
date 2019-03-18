@@ -1,12 +1,12 @@
-package dk.kea.androidgame.martin.myfirstgameengine;
+package com.example.gameengine19;
 
-import dk.kea.androidgame.martin.myfirstgameengine.core.GameEngine;
-import dk.kea.androidgame.martin.myfirstgameengine.core.Screen;
+
+import com.example.gameengine19.core.GameEngine;
 
 public class TestGame extends GameEngine
 {
-    @Override
-    public Screen createStartScreen()
+    public
+    TestScreen createStartScreen()
     {
         return new TestScreen(this);
     }

@@ -1,4 +1,4 @@
-package dk.kea.androidgame.martin.myfirstgameengine.touch;
+package com.example.gameengine19.touch;
 
 public interface TouchHandler
 {
