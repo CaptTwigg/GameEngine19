@@ -1,16 +1,15 @@
-package com.example.gameengine19.Breakout;
+package com.example.gameengine19.CarRacer;
 
 import com.example.gameengine19.core.GameEngine;
 import com.example.gameengine19.core.Screen;
 
 public
-class Breakout extends GameEngine {
-
+class CarRacer extends GameEngine {
   @Override
   public
   Screen createStartScreen() {
     music = this.loadMusic("music.ogg");
-    return new MainmenuScreen(this);
+    return new MainMenuScreen(this);
   }
 
   public void onResume(){

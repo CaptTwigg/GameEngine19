@@ -5,7 +5,9 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -34,42 +36,46 @@ import java.util.Objects;
 public abstract
 class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, SensorEventListener {
 
-  private Thread mainLoopThread;
-  private State state = State.PAUSED;
   private static final List<State> STATE_CHANGES = new ArrayList<>();
-  private SurfaceView surfaceView;
-  private SurfaceHolder surfaceHolder;
-  private Canvas canvas = null;
-  private Screen screen = null;
-  private Bitmap offScreenSurface;
+
+  private Thread            mainLoopThread;
+  private State             state             = State.PAUSED;
+  private SurfaceView       surfaceView;
+  private SurfaceHolder     surfaceHolder;
+  private Canvas            canvas            = null;
+  private Screen            screen            = null;
+  private Bitmap            offScreenSurface;
   private MultiTouchHandler touchHandler;
-  private TouchEventPool touchEventPool = new TouchEventPool();
-  private List<TouchEvent> touchEventBuffer = new ArrayList<>();
-  private List<TouchEvent> touchEventCopied = new ArrayList<>();
-  private float[] accelerometer = new float[3]; // to hold the g-forces in three dimensions, x, y, and z
-  private SoundPool soundpool = new SoundPool.Builder()
-          .setMaxStreams(20)
-          .build();
+  private TouchEventPool    touchEventPool    = new TouchEventPool();
+  private List<TouchEvent>  touchEventsBuffer = new ArrayList<>();
+  private List<TouchEvent>  touchEventsCopied = new ArrayList<>();
+  private float[]           accelerometer     = new float[3]; // to hold the g-forces in three dimensions, x, y, and z
+  private SoundPool         soundpool         = new SoundPool.Builder().setMaxStreams(20).build();
 
   private int framesPerSecond = 0;
-  long currentTime;
-  long lastTime;
+  long  currentTime;
+  long  lastTime;
+  Paint paint = new Paint();
+  public Music music;
 
-  public abstract Screen createStartScreen();
+  public abstract
+  Screen createStartScreen();
 
-  public void setScreen(Screen screen) {
+  public
+  void setScreen(Screen screen) {
 
     if (screen != null) this.screen.dispose();
     this.screen = screen;
   }
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected
+  void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     Objects.requireNonNull(getSupportActionBar()).hide(); // hides the action bar
     this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
-            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     // Prepared variables used for drawing on screen
     surfaceView = new SurfaceView(this);
@@ -80,7 +86,7 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
     if (surfaceView.getWidth() > surfaceView.getHeight()) {
       setOffScreenSurface(480, 320);
     } else setOffScreenSurface(320, 480);
-    touchHandler = new MultiTouchHandler(surfaceView, touchEventBuffer, touchEventPool);
+    touchHandler = new MultiTouchHandler(surfaceView, touchEventsBuffer, touchEventPool);
     SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
     if (sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() != 0) {
       Sensor accelerometer = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
@@ -92,15 +98,17 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
 
   }
 
-  public void setOffScreenSurface(int width, int height) {
+  public
+  void setOffScreenSurface(int width, int height) {
     if (offScreenSurface != null) offScreenSurface.recycle();
     offScreenSurface = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
     canvas = new Canvas(offScreenSurface);
   }
 
-  public Bitmap loadBitmap(String fileName) {
+  public
+  Bitmap loadBitmap(String fileName) {
     InputStream inputStream = null;
-    Bitmap bitmap = null;
+    Bitmap      bitmap      = null;
     try {
       inputStream = getAssets().open(fileName);
       bitmap = BitmapFactory.decodeStream(inputStream);
@@ -121,28 +129,32 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
     }
   }
 
-  public int getFrameBufferWidth() {
+  public
+  int getFrameBufferWidth() {
     return offScreenSurface.getWidth();
   }
 
-  public int getFrameBufferHeight() {
+  public
+  int getFrameBufferHeight() {
     return offScreenSurface.getHeight();
   }
 
-  public void drawBitmap(Bitmap bitmap, int x, int y) {
+  public
+  void drawBitmap(Bitmap bitmap, int x, int y) {
     if (canvas != null) canvas.drawBitmap(bitmap, x, y, null);
   }
 
-  Rect source = new Rect();
+  Rect source      = new Rect();
   Rect destination = new Rect();
 
-  public void drawBitmap(Bitmap bitmap,
-                         int x,
-                         int y,
-                         int sourceX,
-                         int sourceY,
-                         int sourceWidth,
-                         int sourceHeight) {
+  public
+  void drawBitmap(Bitmap bitmap,
+                  int x,
+                  int y,
+                  int sourceX,
+                  int sourceY,
+                  int sourceWidth,
+                  int sourceHeight) {
     if (canvas != null) {
       source.left = sourceX;
       source.top = sourceY;
@@ -159,12 +171,31 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
   }
 
 
-  public void clearFrameBuffer(int color) {
+  public
+  void clearFrameBuffer(int color) {
     canvas.drawColor(color);
   }
 
 
-  public Sound loadSound(String fileName) {
+  public
+  Typeface loadFont(String filename) {
+    Typeface font = Typeface.createFromAsset(getAssets(), filename);
+    if (font == null) throw new RuntimeException("could't load font from: " + filename);
+
+    return font;
+  }
+
+  public
+  void drawText(Typeface font, String text, int x, int y, int color, int size) {
+    paint.setColor(color);
+    paint.setTypeface(font);
+    paint.setTextSize(size);
+    canvas.drawText(text, x, y, paint);
+
+  }
+
+  public
+  Sound loadSound(String fileName) {
     try {
 
       AssetFileDescriptor assetFileDescriptor = getAssets().openFd(fileName);
@@ -176,7 +207,8 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
     }
   }
 
-  public Music loadMusic(String fileName) {
+  public
+  Music loadMusic(String fileName) {
     try {
 
       AssetFileDescriptor assetFileDescriptor = getAssets().openFd(fileName);
@@ -187,62 +219,77 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
     }
   }
 
-  public boolean isTouchDown(int pointer) {
+  public
+  boolean isTouchDown(int pointer) {
     return touchHandler.isTouchDown(pointer);
+  }
+
+  public
+  List<TouchEvent> getTouchEvents() {
+    return touchEventsCopied;
   }
 
   /**
    * @return int as a scaled x
    */
-  public int getTouchX(int pointer) {
+  public
+  int getTouchX(int pointer) {
     return (int) (((float) touchHandler.getTouchX(
-            pointer) * (float) offScreenSurface.getWidth()) / (float) surfaceView.getWidth());
+      pointer) * (float) offScreenSurface.getWidth()) / (float) surfaceView.getWidth());
   }
 
   /**
    * @return int as a scaled y
    */
-  public int getTouchY(int pointer) {
+  public
+  int getTouchY(int pointer) {
     return (int) (((float) touchHandler.getTouchY(
-            pointer) * (float) offScreenSurface.getHeight()) / (float) surfaceView.getHeight());
+      pointer) * (float) offScreenSurface.getHeight()) / (float) surfaceView.getHeight());
   }
 
-  public float[] getAccelerometer() {
+  public
+  float[] getAccelerometer() {
     return accelerometer;
   }
 
   @Override
-  public void onAccuracyChanged(Sensor sensor, int accuracy) {
+  public
+  void onAccuracyChanged(Sensor sensor, int accuracy) {
   }
 
   @Override
-  public void onSensorChanged(SensorEvent sensorEvent) {
+  public
+  void onSensorChanged(SensorEvent sensorEvent) {
     System.arraycopy(sensorEvent.values, 0, accelerometer, 0, 3);
   }
 
-  private void fillEvent() {
-    synchronized (touchEventBuffer) {
-      touchEventCopied.addAll(touchEventBuffer);
-      touchEventBuffer.clear();
+  private
+  void fillEvent() {
+    synchronized (touchEventsBuffer) {
+      touchEventsCopied.addAll(touchEventsBuffer);
+      touchEventsBuffer.clear();
     }
   }
 
-  private void freeEvents() {
-    synchronized (touchEventCopied) {
-      int stop = touchEventCopied.size();
+  private
+  void freeEvents() {
+    synchronized (touchEventsCopied) {
+      int stop = touchEventsCopied.size();
 
       for (int i = 0; i < stop; i++) {
-        touchEventPool.free(touchEventCopied.get(i));
+        touchEventPool.free(touchEventsCopied.get(i));
       }
-      touchEventCopied.clear();
+      touchEventsCopied.clear();
     }
   }
 
-  public int getFPS() {
+  public
+  int getFPS() {
     return framesPerSecond;
   }
 
-  public void run() {
+  public
+  void run() {
     //fps calculator
 //    int frames = 0;
 //    long startTime = System.nanoTime();
@@ -256,7 +303,8 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
           }
           if (this.state == State.PAUSED) {
             //Log.d("GameEngine", "State changed to Pause");
-            return;
+            //this.state = State.PAUSED;
+            screen.pause();
           }
           if (this.state == State.RESUMED) {
             //Log.d("GameEngine", "State changed to Resumed");
@@ -289,7 +337,7 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
           canvas.drawBitmap(offScreenSurface, source, destination, null);
           surfaceHolder.unlockCanvasAndPost(canvas);
         }
-          //fps calculator
+        //fps calculator
 //        frames++; // drawn a frame
 //        if (System.nanoTime() - startTime > 1000_000_000) {
 //          framesPerSecond = frames;
@@ -302,12 +350,14 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
   }
 
   @Override
-  protected void onPause() {
+  protected
+  void onPause() {
     super.onPause();
     synchronized (STATE_CHANGES) {
       if (isFinishing()) {
         STATE_CHANGES.add(STATE_CHANGES.size(), State.DISPOSED);
-      } else STATE_CHANGES.add(STATE_CHANGES.size(), State.PAUSED);
+      } else
+        STATE_CHANGES.add(STATE_CHANGES.size(), State.PAUSED);
     }
     if (isFinishing()) {
       ((SensorManager) getSystemService(Context.SENSOR_SERVICE)).unregisterListener(this);
@@ -317,7 +367,8 @@ class GameEngine extends AppCompatActivity implements Runnable, TouchHandler, Se
   }
 
   @Override
-  protected void onResume() {
+  protected
+  void onResume() {
     super.onResume();
     mainLoopThread = new Thread(this);
     mainLoopThread.start(); // starts the thread

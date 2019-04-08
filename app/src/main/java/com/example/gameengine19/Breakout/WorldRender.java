@@ -1,6 +1,8 @@
 package com.example.gameengine19.Breakout;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import com.example.gameengine19.core.GameEngine;
 
@@ -12,6 +14,7 @@ class WorldRender {
   Bitmap     paddle;
   Bitmap     blockImage;
   Block      block;
+  Bitmap level;
 
   public
   WorldRender(GameEngine gameEngine, World world) {
@@ -20,6 +23,7 @@ class WorldRender {
     ballImage = gameEngine.loadBitmap("breakout/ball.png");
     paddle = gameEngine.loadBitmap("breakout/paddle.png");
     blockImage = gameEngine.loadBitmap("breakout/blocks.png");
+
 
   }
 
@@ -44,6 +48,17 @@ class WorldRender {
       gameEngine.drawBitmap(blockImage, (int)block.x, (int)block.y,
                             0, (int)(block.type*Block.HEIGHT),
                             (int)Block.WIDTH, (int)Block.HEIGHT);
+    }
+  }
+
+  public Bitmap StringToBitMap(String encodedString){
+    try {
+      byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
+      Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+      return bitmap;
+    } catch(Exception e) {
+      e.getMessage();
+      return null;
     }
   }
 }
